@@ -1,49 +1,62 @@
+import os
+import logging
 from flask import Flask, request, jsonify
 from langchain_openai import AzureChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
-import os
 
 # Load environment variables from .env file
 load_dotenv()
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+
+def get_env_var(var_name: str) -> str:
+    """Retrieve an environment variable, raising an error if missing."""
+    value = os.getenv(var_name)
+    if not value:
+        raise EnvironmentError(f"Missing required environment variable: {var_name}. Check your .env file.")
+    return value
+
+
+# Validate and Retrieve Environment Variables
+try:
+    AZURE_OPENAI_API_KEY = get_env_var("AZURE_OPENAI_API_KEY")
+    AZURE_OPENAI_ENDPOINT = get_env_var("AZURE_OPENAI_ENDPOINT")
+    AZURE_OPENAI_API_VERSION = get_env_var("AZURE_OPENAI_API_VERSION")
+    AZURE_OPENAI_CHAT_DEPLOYMENT_NAME = get_env_var("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME")
+except EnvironmentError as e:
+    logging.error(e)
+    raise
+
 # Initialize Flask application
 app = Flask(__name__)
 
-# Section 1: Configure and Validate Azure OpenAI Environment Variables
-required_vars = {
-    "AZURE_OPENAI_API_KEY": os.getenv("AZURE_OPENAI_API_KEY"),
-    "AZURE_OPENAI_ENDPOINT": os.getenv("AZURE_OPENAI_ENDPOINT"),
-    "AZURE_OPENAI_API_VERSION": os.getenv("AZURE_OPENAI_API_VERSION"),
-    "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME": os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME")
-}
-
-for var, desc in required_vars.items():
-    if not os.getenv(var):
-        raise ValueError(f"Missing {desc} in environment variables. Check your .env file.")
-
-# Section 2: Initialize the Azure OpenAI Model with LangChain
+# Initialize the Azure OpenAI Model with LangChain
 try:
     llm = AzureChatOpenAI(
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
+        api_version=AZURE_OPENAI_API_VERSION,
+        azure_deployment=AZURE_OPENAI_CHAT_DEPLOYMENT_NAME,
         temperature=0.7,
         max_tokens=500
     )
+    logging.info("AzureChatOpenAI successfully initialized.")
 except Exception as e:
-    raise RuntimeError(f"Failed to initialize AzureChatOpenAI: {str(e)}")
+    logging.error(f"Failed to initialize AzureChatOpenAI: {e}")
+    raise RuntimeError(f"Failed to initialize AzureChatOpenAI: {e}")
 
-# Section 3: Define Chat Prompt Template
+# Define Chat Prompt Template
 prompt_template = ChatPromptTemplate.from_messages([
     ("system", "You are a helpful assistant providing concise and accurate answers."),
     ("human", "{question}")
 ])
 
-# Section 4: Create a Chain
+# Create a Chain
 chain = prompt_template | llm
 
 
-# Section 5: Define the REST API Endpoint
+# Define the REST API Endpoint
 @app.route('/ask', methods=['POST'])
 def ask_question():
     """
@@ -58,12 +71,16 @@ def ask_question():
             return jsonify({"error": "Missing 'question' in request body"}), 400
 
         # Extract question from the request
-        question = data['question']
-        print(f"Question received: {question}")
+        question = data.get('question', '').strip()
+        if not question:
+            return jsonify({"error": "Question cannot be empty"}), 400
+
+        logging.info(f"Received question: {question}")
 
         # Invoke the chain with the user's question
         response = chain.invoke({"question": question})
-        print(f"Response: {response.content}")
+
+        logging.info(f"Response generated: {response.content}")
 
         # Return the response
         return jsonify({
@@ -72,12 +89,15 @@ def ask_question():
         }), 200
 
     except KeyError as e:
+        logging.error(f"KeyError: {e}")
         return jsonify({"error": f"KeyError: {str(e)}"}), 500
     except Exception as e:
+        logging.error(f"Unexpected error: {type(e).__name__}: {e}")
         return jsonify({"error": f"Unexpected error: {type(e).__name__}: {str(e)}"}), 500
 
 
-# Section 6: Run the Flask Application
+# Run the Flask Application
 if __name__ == '__main__':
     # Start the Flask server on port 3000
+    logging.info("Starting Flask server on port 3000...")
     app.run(host='0.0.0.0', port=3000, debug=True)
