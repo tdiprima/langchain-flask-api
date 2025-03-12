@@ -14,3 +14,11 @@ curl -X POST http://localhost:3000/ask \
     "question": "What is its population?",
     "session_id": "123e4567-e89b-12d3-a456-426614174000"
   }'
+
+# Step 3: Start a new conversation
+curl -X POST http://localhost:3000/ask \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "Tell me a joke.",
+    "new_conversation": true
+  }'
