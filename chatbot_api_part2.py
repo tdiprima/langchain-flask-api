@@ -103,4 +103,7 @@ def generate_session():
     return jsonify({"session_id": new_session_id, "status": "success"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000, debug=True)
+    # Start the Flask server on port 3000
+    port = 3000
+    logging.info(f"Starting Flask server on port {port}...")
+    app.run(host='0.0.0.0', port=port, debug=True)
