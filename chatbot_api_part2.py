@@ -105,5 +105,5 @@ def generate_session():
 if __name__ == '__main__':
     # Start the Flask server on port 3000
     port = 3000
-    logging.info(f"Starting Flask server on port {port}...")
+    print(f"Starting Flask server on port {port}...")
     app.run(host='0.0.0.0', port=port, debug=True)
