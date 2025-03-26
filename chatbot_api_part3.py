@@ -65,9 +65,26 @@ def save_users(users):
         json.dump(users, f, indent=2)
 
 def load_users():
-    if os.path.exists(USERS_FILE):
-        with open(USERS_FILE, 'r') as f:
-            return json.load(f)
+    try:
+        if os.path.exists(USERS_FILE):
+            with open(USERS_FILE, 'r') as f:
+                data = json.load(f)
+                # Ensure we have a dictionary
+                if not isinstance(data, dict):
+                    print(f"Warning: users file content is not a dictionary. Resetting to empty dictionary.")
+                    data = {}
+                    # Save the corrected format
+                    with open(USERS_FILE, 'w') as fw:
+                        json.dump(data, fw, indent=2)
+                return data
+    except json.JSONDecodeError as e:
+        print(f"Error loading users file: {e}. Resetting to empty dictionary.")
+        # If JSON is invalid, reset the file with an empty dictionary
+        with open(USERS_FILE, 'w') as f:
+            json.dump({}, f, indent=2)
+    except Exception as e:
+        print(f"Unexpected error loading users file: {e}. Using empty dictionary.")
+    
     return {}
 
 users = load_users()

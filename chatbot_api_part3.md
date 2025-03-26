@@ -45,25 +45,33 @@ Now that conversation persistence is implemented, you can test it with the follo
 Register a new user
 
 ```sh
-curl -X POST http://localhost:3000/register \ -H "Content-Type: application/json" \ -d '{"username":"testuser", "password":"password123"}'
+curl -X POST http://localhost:3000/register \
+-H "Content-Type: application/json" \
+-d '{"username":"testuser", "password":"password123"}'
 ```
 
 Log in with the new user
 
 ```sh
-curl -X POST http://localhost:3000/login \ -H "Content-Type: application/json" \ -d '{"username":"testuser", "password":"password123"}'
+curl -X POST http://localhost:3000/login \
+-H "Content-Type: application/json" \
+-d '{"username":"testuser", "password":"password123"}'
 ```
 
 Use the session ID to ask questions
 
 ```sh
 # Replace YOUR_SESSION_ID with the session ID from the login response
-curl -X POST http://localhost:3000/ask \ -H "Content-Type: application/json" \ -d '{"question":"What is machine learning?", "session_id":"YOUR_SESSION_ID"}'
+curl -X POST http://localhost:3000/ask \
+-H "Content-Type: application/json" \
+-d '{"question":"What is machine learning?", "session_id":"YOUR_SESSION_ID"}'
 ```
 
 ```sh
 # Replace YOUR_SESSION_ID with the session ID from the login response
-curl -X POST http://localhost:3000/logout \ -H "Content-Type: application/json" \ -d '{"session_id":"YOUR_SESSION_ID"}'
+curl -X POST http://localhost:3000/logout \
+-H "Content-Type: application/json" \
+-d '{"session_id":"YOUR_SESSION_ID"}'
 ```
 
 <br>

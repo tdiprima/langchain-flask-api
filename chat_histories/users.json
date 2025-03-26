@@ -1,1 +1,8 @@
-[]
+{
+  "testuser": {
+    "password_hash": "scrypt:32768:8:1$CdHOZVV18xEV5Jwr$1f1265e26d7dfdfbbe136f251bf8f0993cd1b7e7a6f71b71d133888789617162abf4cec596d7e38af9a8247b895fc4de97d21028b257efc5cda4a89b91f4b450",
+    "sessions": [
+      "b6ffe913-70d2-4149-b7a3-a1913b45d856"
+    ]
+  }
+}
