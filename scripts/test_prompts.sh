@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start your Flask app (uncomment if not already running)
-# python app.py &
+# export OPENAI_API_VERSION="2023-05-15" && python app.py
 
 # 2. List available personas - see what flavors your chatbot's got!
 echo "Fetching available personas..."
