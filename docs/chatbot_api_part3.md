@@ -20,7 +20,7 @@ Now that conversation persistence is implemented, you can test it with the follo
     curl -X POST http://localhost:3000/ask \
       -H "Content-Type: application/json" \
       -d '{"question":"What is artificial intelligence?", "session_id":"YOUR_SESSION_ID"}'
-```
+    ```
 
 4. Restart your Flask application (press `Ctrl+C` to stop and then restart):
 
@@ -40,7 +40,7 @@ Now that conversation persistence is implemented, you can test it with the follo
     curl -X POST http://localhost:3000/ask \
       -H "Content-Type: application/json" \
       -d '{"question":"What are its main applications?", "session_id":"YOUR_SESSION_ID"}'
-```
+    ```
 
 Register a new user
 
