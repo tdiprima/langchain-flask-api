@@ -1,4 +1,5 @@
 #!/bin/bash
+# Testing the API
 
 # 1. Start the application (run this in a separate terminal)
 # python app.py
