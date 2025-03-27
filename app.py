@@ -14,7 +14,7 @@ app = Flask(__name__)
 # Section 1: Configure and Validate Azure OpenAI Environment Variables
 required_vars = {
     "AZURE_OPENAI_API_KEY": "API key",
-    "AZURE_OPENAI_ENDPOINT": "endpoint",
+    "AZURE_OPENAI_API_ENDPOINT": "endpoint",
     "AZURE_OPENAI_API_VERSION": "API version",
     "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME": "deployment name"
 }

@@ -1,1 +1,14 @@
-{}
+{
+  "033aeede-296b-4cfb-9d45-27237997199b": [
+    {
+      "question": "What is artificial intelligence?",
+      "answer": "Artificial intelligence (AI) is a branch of computer science focused on creating systems or machines that can perform tasks typically requiring human intelligence. These tasks include learning, reasoning, problem-solving, understanding language, and visual perception. AI can be categorized into narrow AI (designed for specific tasks, like virtual assistants) and general AI (a theoretical concept where machines can perform any intellectual task a human can do).",
+      "timestamp": "2025-03-27 13:02:58.772068"
+    },
+    {
+      "question": "What are its main applications?",
+      "answer": "Artificial intelligence has diverse applications across various fields, including:\n\n1. **Healthcare**: Diagnosing diseases, personalized treatment, drug discovery, and medical imaging analysis.\n2. **Finance**: Fraud detection, algorithmic trading, risk assessment, and customer service chatbots.\n3. **Transportation**: Autonomous vehicles, traffic management, and predictive maintenance.\n4. **Retail**: Personalized recommendations, inventory management, and customer service automation.\n5. **Manufacturing**: Quality control, predictive maintenance, and robotics for assembly lines.\n6. **Education**: Adaptive learning platforms, automated grading, and virtual tutors.\n7. **Entertainment**: Content recommendations, game design, and realistic simulations.\n8. **Agriculture**: Precision farming, crop monitoring, and pest control.\n9. **Security**: Facial recognition, threat detection, and cybersecurity solutions.\n\nAI continues to evolve, expanding its role in many industries.",
+      "timestamp": "2025-03-27 13:06:24.058929"
+    }
+  ]
+}
