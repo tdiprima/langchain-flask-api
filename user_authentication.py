@@ -122,5 +122,77 @@ def logout():
         return jsonify({"error": f"Unexpected error: {type(e).__name__}: {str(e)}"}), 500
 
 
+@app.route('/ask', methods=['POST'])
+def ask_question():
+    """REST API endpoint to ask a question to Azure OpenAI.
+    Expects a JSON payload with 'question' field and optional 'session_id'.
+    Returns the model's response as JSON along with the chat history for that session."""
+    global chat_histories, users
+    try:
+        data = request.get_json()
+        if not data or 'question' not in data:
+            return jsonify({"error": "Missing 'question' in request body"}), 400
+
+        question = data['question']
+        session_id = data.get('session_id', session.get('session_id', 'default_session'))
+
+        is_authenticated = False
+        session_username = None
+        if 'username' in session and session.get('session_id') == session_id:
+            is_authenticated = True
+            session_username = session.get('username')
+        else:
+            for username, user_data in users.items():
+                if session_id in user_data['sessions']:
+                    is_authenticated = True
+                    session_username = username
+                    break
+
+        print(f"Question received from {'authenticated ' + session_username if is_authenticated else 'unauthenticated'} session {session_id}: {question}")
+
+        if session_id not in chat_histories:
+            chat_histories[session_id] = []
+
+        session_history = chat_histories[session_id]
+        context = ""
+        if session_history:
+            context = "Previous conversation:\n"
+            for entry in session_history:
+                context += f"Human: {entry['question']}\nAI: {entry['answer']}\n"
+
+        contextualized_question = question
+        if context:
+            contextualized_question = f"{context}\nHuman: {question}"
+
+        response = chain.invoke({"question": contextualized_question})
+        print(f"Response for session {session_id}: {response.content}")
+
+        chat_histories[session_id].append({
+            "question": question,
+            "answer": response.content,
+            "timestamp": str(datetime.now()),
+            "user": session_username if is_authenticated else "anonymous"
+        })
+
+        if len(chat_histories[session_id]) > MAX_HISTORY_LENGTH:
+            chat_histories[session_id] = chat_histories[session_id][-MAX_HISTORY_LENGTH:]
+
+        save_chat_histories()
+
+        return jsonify({
+            "answer": response.content,
+            "status": "success",
+            "session_id": session_id,
+            "authenticated": is_authenticated,
+            "username": session_username if is_authenticated else None,
+            "history": chat_histories[session_id]
+        }), 200
+
+    except KeyError as e:
+        return jsonify({"error": f"KeyError: {str(e)}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {type(e).__name__}: {str(e)}"}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
