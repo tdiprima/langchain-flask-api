@@ -28,7 +28,7 @@ os.makedirs(HISTORY_DIR, exist_ok=True)
 
 # Initialize Azure OpenAI client
 llm = AzureChatOpenAI(
-    openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
     azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
     temperature=0.7,
     max_tokens=500
@@ -43,10 +43,12 @@ chain = ConversationChain(
     memory=ConversationBufferMemory()
 )
 
+
 # Load and save chat histories
 def save_chat_histories():
     with open(HISTORY_FILE, 'w') as f:
         json.dump(chat_histories, f, indent=2)
+
 
 def load_chat_histories():
     global chat_histories
@@ -56,13 +58,16 @@ def load_chat_histories():
     else:
         chat_histories = {}
 
+
 chat_histories = {}
 load_chat_histories()
+
 
 # User management functions
 def save_users(users):
     with open(USERS_FILE, 'w') as f:
         json.dump(users, f, indent=2)
+
 
 def load_users():
     try:
@@ -87,7 +92,9 @@ def load_users():
     
     return {}
 
+
 users = load_users()
+
 
 # Authentication decorator
 def login_required(f):
@@ -97,6 +104,7 @@ def login_required(f):
             return jsonify({"error": "Authentication required"}), 401
         return f(*args, **kwargs)
     return decorated_function
+
 
 # Routes
 @app.route('/register', methods=['POST'])
@@ -111,6 +119,7 @@ def register():
     users[username] = {'password_hash': generate_password_hash(password), 'sessions': []}
     save_users(users)
     return jsonify({"message": f"User {username} registered successfully", "status": "success"}), 201
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -129,6 +138,7 @@ def login():
 
     return jsonify({"message": f"User {username} logged in successfully", "session_id": session_id}), 200
 
+
 @app.route('/logout', methods=['POST'])
 @login_required
 def logout():
@@ -141,6 +151,7 @@ def logout():
     save_users(users)
 
     return jsonify({"message": "Logged out successfully"}), 200
+
 
 @app.route('/ask', methods=['POST'])
 def ask_question():
@@ -185,6 +196,7 @@ def ask_question():
         "history": chat_histories[session_id]
     }), 200
 
+
 @app.route('/history', methods=['GET'])
 def get_history():
     session_id = request.args.get('session_id', 'default_session')
@@ -194,6 +206,7 @@ def get_history():
         "session_id": session_id
     }), 200
 
+
 @app.route('/clear-history', methods=['POST'])
 def clear_history():
     data = request.get_json() or {}
@@ -201,12 +214,14 @@ def clear_history():
     chat_histories[session_id] = []
     return jsonify({"message": f"Chat history for session {session_id} cleared successfully", "status": "success"}), 200
 
+
 @app.route('/clear-all-history', methods=['POST'])
 def clear_all_history():
     global chat_histories
     session_count = len(chat_histories)
     chat_histories = {}
     return jsonify({"message": f"Chat history cleared for all {session_count} sessions", "status": "success"}), 200
+
 
 @app.route('/generate-session', methods=['GET'])
 def generate_session():

@@ -25,7 +25,7 @@ prompt_template = ChatPromptTemplate.from_messages([
 
 # Azure OpenAI setup
 llm = AzureChatOpenAI(
-    openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
     azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
     temperature=0.7,
     max_tokens=500

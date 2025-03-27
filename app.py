@@ -37,10 +37,11 @@ MAX_HISTORY_LENGTH = 10
 
 # Azure OpenAI setup (assuming from earlier sections)
 llm = AzureChatOpenAI(
-    openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
     azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
     temperature=0.7
 )
+
 
 # Classify question type
 def classify_question_type(question):
@@ -52,6 +53,7 @@ def classify_question_type(question):
     if any(q in question for q in ["how do i", "how to", "steps", "guide", "tutorial", "instructions"]):
         return "instruction"
     return None
+
 
 # Create dynamic prompt template
 def create_prompt_template(persona="default", question_type=None):
@@ -67,6 +69,7 @@ def create_prompt_template(persona="default", question_type=None):
     
     messages.append(("human", "{question}"))
     return ChatPromptTemplate.from_messages(messages)
+
 
 # Ask endpoint with dynamic prompts
 @app.route('/ask', methods=['POST'])
@@ -128,6 +131,7 @@ def ask_question():
     except Exception as e:
         return jsonify({"error": f"Unexpected error: {type(e).__name__}: {str(e)}"}), 500
 
+
 # List personas endpoint
 @app.route('/personas', methods=['GET'])
 def get_personas():
@@ -135,6 +139,7 @@ def get_personas():
         "personas": list(PERSONAS.keys()),
         "descriptions": PERSONAS
     }), 200
+
 
 if __name__ == '__main__':
     app.run(port=3000, debug=True)

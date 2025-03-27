@@ -22,12 +22,13 @@ FEW_SHOT_EXAMPLES = {
 
 # Azure OpenAI setup (replace with your creds)
 llm = AzureChatOpenAI(
-    openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
     azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
     temperature=0.7
 )
+
 
 # Guess the question type
 def classify_question(question):
@@ -36,6 +37,7 @@ def classify_question(question):
     if "think" in q or "best" in q: return "opinion"
     if "how" in q: return "instruction"
     return None
+
 
 # Build a dynamic prompt
 def make_prompt(question, persona="default"):
@@ -46,11 +48,13 @@ def make_prompt(question, persona="default"):
         system += f"\nExample: Q: {example['q']} A: {example['a']}"
     return ChatPromptTemplate.from_messages([("system", system), ("human", question)])
 
+
 # Ask and answer
 def chat(question, persona="default"):
     prompt = make_prompt(question, persona)
     response = (prompt | llm).invoke({"question": question})
     print(f"🤖 [{persona}]: {response.content}")
+
 
 # Test it out
 if __name__ == "__main__":
