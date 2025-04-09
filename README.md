@@ -115,3 +115,5 @@ Run them from your terminal to simulate real-world usage.
 ## 📣 Contributions & Feedback
 
 PRs welcome. If it breaks, log it. If it's awesome, share it. Let’s build cool stuff. 🚀
+
+> ⚠️ **Note:** Some Python modules in this repository are partial implementations or work-in-progress stubs. You may encounter placeholder functions, incomplete classes, or redundant components (e.g., `prompt_engineering1.py`, `user_authentication.py`). These are included for development transparency and future extension.
